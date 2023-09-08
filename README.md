@@ -52,7 +52,7 @@ choice. Within that directory, create the conda environment like so:
 conda env create --file environment.yml
 ```
 
-Download the stimulus folder from [here](blabla) and unzip it to the
+Download the stimulus folder from [here](https://keeper.mpdl.mpg.de/f/8d7f5791a6634d76a9b8/) and unzip it to the
 installation directory.
 
 ### Run the demo
