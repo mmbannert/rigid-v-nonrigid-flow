@@ -30,15 +30,15 @@ flow that we compute from depth and pose (x axis). The distribution falls along
 the identity for Sintel and for Spring. This shows that, for both datasets,
 rigid flow can be computed from depth and pose.
 
-[![Sintel](https://mmbannert.github.com/rigid-v-nonrigid-flow/)]
-[![Spring](https://mmbannert.github.com/rigid-v-nonrigid-flow/)]
+[![Sintel](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/sintel.png)]
+[![Spring](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/spring.png)]
 
 For Kubric, in contrast, there is a mismatch between ground truth optical flow
 and the rigid flow that is computed from depth and pose. This could mean
 that the scene parameters are inconsistent or that they cannot be interpreted
 to reconstruct rigid flow.
 
-[![Kubric](https://mmbannert.github.com/rigid-v-nonrigid-flow/)]
+[![Kubric](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/kubric.png)]
 
 ## Steps to reproduce
 
