@@ -40,6 +40,8 @@ to reconstruct rigid flow.
 
 ![Kubric](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/kubric.png)
 
+For more further details, take a look at the accompanying [Jupyter Notebook](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/sintel_v_spring_v_kubric_demo.ipynb).
+
 ## Steps to reproduce
 
 ### Installation
