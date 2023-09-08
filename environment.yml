@@ -1,0 +1,21 @@
+name: rigid-flow
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - scipy
+  - conda-repo-cli
+  - nb_conda_kernels
+  - jupyter
+  - jupyterlab
+  - notebook
+  - numpy
+  - matplotlib
+  - h5py
+  - opencv
+  - ipywidgets=7
+  - ipympl
+  - pip
+  - pip:
+    - flow-vis
+    
