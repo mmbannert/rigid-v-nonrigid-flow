@@ -52,8 +52,10 @@ choice. Within that directory, create the conda environment like so:
 conda env create --file environment.yml
 ```
 
+### Data download
 Download the stimulus folder from [here](https://keeper.mpdl.mpg.de/f/8d7f5791a6634d76a9b8/) and unzip it to the
-installation directory.
+installation directory. It contains the actual RGB frames that were used in the
+example as well as the ground truth information and labels.
 
 ### Run the demo
 Start a Jupyter Notebook.
