@@ -11,7 +11,7 @@ def visualize_results(rgb_pair: tuple, depth_pair: tuple, flow: np.ndarray,
 
     fig = plt.figure(figsize=(6.5, 5 * 6.5))
 
-    gs = fig.add_gridspec(12, 2)
+    gs = fig.add_gridspec(11, 2)
 
     ax0 = fig.add_subplot(gs[0, 0])
     ax1 = fig.add_subplot(gs[0, 1])
@@ -26,8 +26,6 @@ def visualize_results(rgb_pair: tuple, depth_pair: tuple, flow: np.ndarray,
     ax10 = fig.add_subplot(gs[5:7, :])
     ax11 = fig.add_subplot(gs[7:9, :])
     ax12 = fig.add_subplot(gs[9:11, :])
-    ax13 = fig.add_subplot(gs[11, 0])
-    ax14 = fig.add_subplot(gs[11, 1])
 
     ax0.imshow(rgb1)
     ax0.set_title('1st frame')
@@ -80,18 +78,31 @@ def visualize_results(rgb_pair: tuple, depth_pair: tuple, flow: np.ndarray,
     ax12.set_title('residual flow after subtracting flow due to camera motion (nonrigid flow)')
     ax12.set_xticks([]); ax6.set_yticks([])
 
-    ax13.scatter(rigid_flo[..., 0].ravel(), flow[..., 0].ravel(), c='k',
-                alpha=.05, s=1)
-    ax13.set_xlabel('rigid flow')
-    ax13.set_ylabel('GT')
-    ax13.set_title('u')
-    ax13.plot(flow[..., 0].ravel(), flow[..., 0].ravel(), c='g', linestyle=':')
-    ax14.scatter(rigid_flo[..., 1].ravel(), flow[..., 1].ravel(), c='k',
-                alpha=.05, s=1)
-    ax14.set_xlabel('rigid flow')
-    ax14.set_ylabel('GT')
-    ax14.set_title('v')
-    ax14.plot(flow[..., 1].ravel(), flow[..., 1].ravel(), c='g', linestyle=':')
+    plt.suptitle(ds_name.upper())
+    plt.tight_layout()
+
+    # Now plot only the direct comparison between ground truth flow and rigid 
+    # flow
+    fig = plt.figure(figsize=(8, 4))
+
+    ax = fig.add_subplot(121)
+    ax.scatter(rigid_flo[..., 0].ravel(), flow[..., 0].ravel(), c='k',
+               alpha=.05, s=1)
+    ax.set_xlabel('rigid flow')
+    ax.set_ylabel('GT')
+    ax.set_title('u')
+    ax.plot(flow[..., 0].ravel(), flow[..., 0].ravel(), c='g', linestyle=':')
+
+    ax = fig.add_subplot(122)
+    ax.scatter(rigid_flo[..., 1].ravel(), flow[..., 1].ravel(), c='k',
+               alpha=.05, s=1)
+    ax.set_xlabel('rigid flow')
+    ax.set_ylabel('GT')
+    ax.set_title('v')
+    ax.plot(flow[..., 1].ravel(), flow[..., 1].ravel(), c='g', linestyle=':')
 
     plt.suptitle(ds_name.upper())
     plt.tight_layout()
+
+    fig.savefig('images/%s.png' % ds_name)
+    
