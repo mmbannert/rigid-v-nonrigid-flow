@@ -33,14 +33,14 @@ rigid flow can be computed from depth and pose.
 ![Sintel](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/sintel.png)
 ![Spring](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/spring.png)
 
-For Kubric, in contrast, there is a mismatch between ground truth optical flow
+For Kubric, in contrast, the figure below shows a mismatch between ground truth optical flow
 and the rigid flow that is computed from depth and pose. This could mean
 that the scene parameters are inconsistent or that they cannot be interpreted
-to reconstruct rigid flow.
+correctly to reconstruct rigid flow.
 
 ![Kubric](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/kubric.png)
 
-For more further details, take a look at the accompanying [Jupyter Notebook](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/sintel_v_spring_v_kubric_demo.ipynb).
+For further details, please take a look at the accompanying [Jupyter Notebook](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/sintel_v_spring_v_kubric_demo.ipynb).
 
 ## Steps to reproduce
 
