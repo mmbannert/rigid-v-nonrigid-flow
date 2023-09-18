@@ -2,7 +2,7 @@ import os.path as op
 import cv2 as cv
 import numpy as np
 import json
-from . import sintel, spring, kubric
+from . import sintel, spring, kubric, monkaa
 
 ''' 
 Define functions to load ...
@@ -37,22 +37,40 @@ def get_rgb(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
         rgb2_path = op.join(data_dir, mov_name,
                             'frame_left/frame_left_%04.i.png' % 
                             (frame1_num+1))
+        rgb1 = cv.imread(rgb1_path, -1)[...,::-1]
+        rgb1 = rgb1.astype('float32') / 255.
+
+        rgb2 = cv.imread(rgb2_path, -1)[...,::-1]
+        rgb2 = rgb2.astype('float32') / 255.
+
         
     elif dataset=='kubric':
         rgb1_path = op.join(data_dir, mov_name, 'rgba_%05.i.png' % frame1_num)
         rgb2_path = op.join(data_dir, mov_name, 'rgba_%05.i.png' % (
             frame1_num+1))
 
-    rgb1 = cv.imread(rgb1_path, cv.IMREAD_COLOR)[..., ::-1]
-    rgb2 = cv.imread(rgb2_path, cv.IMREAD_COLOR)[..., ::-1]
+        rgb1 = cv.imread(rgb1_path, cv.IMREAD_COLOR)[..., ::-1]
+        rgb2 = cv.imread(rgb2_path, cv.IMREAD_COLOR)[..., ::-1]
 
-    if rgb1.dtype=='uint8':
+        if rgb1.dtype=='uint8':
+            rgb1 = rgb1.astype('float32') / 255.
+
+        if rgb2.dtype=='uint8':
+            rgb2 = rgb2.astype('float32') / 255.
+
+    
+
+    elif dataset=='monkaa':
+        rgb1_path = op.join(data_dir, mov_name,'rgb', '%04.i.png' % frame1_num)
+        rgb2_path = op.join(data_dir, mov_name,'rgb', '%04.i.png' % (frame1_num+1))
+        rgb1 = cv.imread(rgb1_path, -1)[...,::-1]
         rgb1 = rgb1.astype('float32') / 255.
 
-    if rgb2.dtype=='uint8':
+        rgb2 = cv.imread(rgb2_path, -1)[...,::-1]
         rgb2 = rgb2.astype('float32') / 255.
 
     return rgb1, rgb2
+
 
 
 def get_depth(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
@@ -91,6 +109,25 @@ def get_depth(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
             data_dir, mov_name,'depth_%05.i.tiff' % frame1_num))
         depth2 = kubric.depth_read(op.join(
             data_dir, mov_name,'depth_%05.i.tiff' % (frame1_num+1)))
+        
+    elif dataset=='monkaa':
+        disp1_path = op.join(data_dir, mov_name,'depth',
+                              '%04.i.pfm'% 
+                             frame1_num)
+        disp2_path = op.join(data_dir, mov_name,'depth',
+                              '%04.i.pfm' % (
+                             frame1_num+1))
+        focal_length=1050
+        baseline=1  
+
+        disparity1 = monkaa.disp_read(disp1_path)
+        disparity2 = monkaa.disp_read(disp2_path)
+        disparity1 = disparity1[0]
+        disparity2 = disparity2[0]
+
+        depth1=baseline * focal_length / disparity1
+        depth2=baseline * focal_length / disparity2
+    
     
     return depth1, depth2        
 
@@ -108,7 +145,7 @@ def get_camera(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
 
         cam1 = sintel.cam_read(cam1_path)
         cam2 = sintel.cam_read(cam2_path)
-
+        
     elif dataset=='spring':
         cam_dir = op.join(data_dir, mov_name,'cam_data')
 
@@ -137,7 +174,34 @@ def get_camera(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
 
         cam1 = kubric.cam_read(metadata_path, frame1_num)
         cam2 = kubric.cam_read(metadata_path, frame1_num+1)
+        
 
+    elif dataset=='monkaa':
+        cam_dir = op.join(data_dir, mov_name,'cam','camera_data.txt')
+        cam = monkaa.cam_read(cam_dir)
+        intrinsics=cam[0]
+        extrinsics=cam[1]
+        print("ext", len(extrinsics))
+        cam1=[intrinsics, extrinsics[frame1_num]]
+        cam2=[intrinsics, extrinsics[frame1_num+1]]
+        
+        # Need matrix inverse because you obtain points in world coordinates by
+        # multiplying it with points in camera coordinates, as explained here:
+        # https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html
+        # However, we want the matrix to be in the format that takes a point in
+        # world coordinates to one in camera coordinates.
+        cam1[1] = np.linalg.inv(cam1[1])[:3]
+
+        # The Y coordinate of the camera system points upward but it is 
+        # expected to point downwards, the Z coordinate points to the back of
+        # the camera not into the front direction. Need to invert these two 
+        # reason for this reason. See docs cited above.
+        cam1[1][1:3, :] = -cam1[1][1:3, :]
+        
+        # Same
+        cam2[1] = np.linalg.inv(cam2[1])[:3]
+        cam2[1][1:3, :] = -cam2[1][1:3, :]
+        
     return cam1, cam2
             
 
@@ -158,5 +222,11 @@ def get_flow(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
         flow_path = op.join(data_dir, mov_name, 'forward_flow_%05.i.png' % 
                             frame1_num)
         flow = kubric.flow_read(flow_path)
+
+    elif dataset=='monkaa':
+        flow_path = op.join(data_dir, mov_name, 'flow',
+                    'OpticalFlowIntoFuture_%04.i_R.pfm' % frame1_num)
+        flow = monkaa.flow_read(flow_path)
+
 
     return flow
