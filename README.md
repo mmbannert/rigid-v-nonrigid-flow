@@ -16,6 +16,7 @@ truth information on optical flow, depth, and camera matrices. Examples are:
 
 * [Sintel](http://sintel.is.tue.mpg.de/)
 * [Spring](https://spring-benchmark.org/)
+* [Monkaa](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html)
 * [Kubric](https://github.com/google-research/kubric)
 * ...
 
@@ -27,11 +28,12 @@ rigid flow computed from depth and camera pose.
 ## Problem
 We plot the distribution of ground truth optical flow (y axis) against the rigid 
 flow that we compute from depth and pose (x axis). The distribution falls along
-the identity for Sintel and for Spring. This shows that, for both datasets,
+the identity for Sintel, Spring and for Monkaa. This shows that, for these datasets,
 rigid flow can be computed from depth and pose.
 
 ![Sintel](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/sintel.png)
 ![Spring](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/spring.png)
+![Monkaa](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/monkaa.png)
 
 For Kubric, in contrast, the figure below shows a mismatch between ground truth optical flow
 and the rigid flow that is computed from depth and pose. This could mean
@@ -40,7 +42,7 @@ correctly to reconstruct rigid flow.
 
 ![Kubric](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/images/kubric.png)
 
-For further details, please take a look at the accompanying [Jupyter Notebook](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/sintel_v_spring_v_kubric_demo.ipynb).
+For further details, please take a look at the accompanying [Jupyter Notebook](https://github.com/mmbannert/rigid-v-nonrigid-flow/blob/master/rigid_v_nonrigid_flow_demo.ipynb).
 
 ## Steps to reproduce
 
@@ -62,5 +64,5 @@ Start a Jupyter Notebook.
 ``` shell
 jupyter notebook
 ```
-... and open the Jupyter Notebook called `sintel_v_spring_v_kubric_demo.ipynb`.
+... and open the Jupyter Notebook called `rigid_v_nonrigid_flow_demo.ipynb`.
 Change `base_dir` so that it points to your installation directory.
