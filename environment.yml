@@ -15,6 +15,7 @@ dependencies:
   - opencv
   - ipywidgets=7
   - ipympl
+  - pyquaternion
   - pip
   - pip:
     - flow-vis
