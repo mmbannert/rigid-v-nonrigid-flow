@@ -175,6 +175,29 @@ def get_camera(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
         cam1 = kubric.cam_read(metadata_path, frame1_num)
         cam2 = kubric.cam_read(metadata_path, frame1_num+1)
         
+        cam1 = [cam1[0], cam1[1]]
+        cam2 = [cam2[0], cam2[1]]
+
+        # 1. The extrinsic matrix provided by Kubric is a camera-to-world 
+        # matrix. Hece, it transforms points in the homogenous camera coodinate
+        # system to the world coordinate system.
+        #   pt_w = extrinsic_matrix @ pt_c
+        # However, we expect it to transform from world to camera coordinates.
+        # The inverted extrinsic matrix is therefore required. (This is also
+        # the case for the extrinsic matrix in the Monkaa dataset- see below.)
+        # 
+        # 2. In the default case, the positive Y values in the camera
+        # coordinate system point upwards, positive Z values point backwards
+        # from the scene into the camera, positive X values point leftwards.
+        # We need the change the sign of the Y and Z coordinates. (The X
+        # coordinate seems to be fine somehow.)
+        cam1[1] = np.linalg.inv(cam1[1])[:3]
+        cam1[1][1:3, :] = -cam1[1][1:3, :]
+
+        # ... same for second frame
+        cam2[1] = np.linalg.inv(cam2[1])[:3]
+        cam2[1][1:3, :] = -cam2[1][1:3, :]
+        
 
     elif dataset=='monkaa':
         cam_dir = op.join(data_dir, mov_name,'cam','camera_data.txt')
