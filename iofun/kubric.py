@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 import json
-from scipy.spatial.transform import Rotation as R
+import pyquaternion as pyquat
 import os.path as op
 
 
@@ -39,18 +39,20 @@ def cam_read(file_path: str, frame_num: int):
     # focal length and principal points need to be positive
     intrinsics = np.abs(intrinsics)
     # ... and expressed in pixels
-    intrinsics[:2, :] = intrinsics[:2, :] * \
-        metadata['metadata']['resolution'][0]
+    intrinsics[0, :] *= metadata['metadata']['resolution'][0]
+    intrinsics[1, :] *= metadata['metadata']['resolution'][1]
 
     ''' 
     Load camera extrinsics
     '''
     # Use scipy's Rotation module to convert from quaternion to matrix
     # representation
-    rot = R.from_quat(
-        metadata['camera']['quaternions'][frame_num]).as_matrix()
+    quat = metadata['camera']['quaternions'][frame_num]
+    rot = pyquat.Quaternion(quat).rotation_matrix
+
     trans = np.array(
         metadata['camera']['positions'][frame_num]).reshape((3, 1))
     extrinsics = np.hstack((rot, trans))
+    extrinsics = np.vstack((extrinsics, np.array([[0, 0, 0, 1]])))
 
     return intrinsics, extrinsics
