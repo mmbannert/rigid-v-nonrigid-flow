@@ -5,8 +5,27 @@ import pyquaternion as pyquat
 import os.path as op
 
 
+def gaus2d(size, std, scale, offset):
+    H, W = size
+    min_std = 1.0 / min(size)
+
+    # Normalize grid generation
+    grid_x = np.linspace(-1, 1, W)
+    grid_y = np.linspace(-1, 1, H)
+
+    grid_x, grid_y = np.meshgrid(grid_x, grid_y)
+
+    # Adjusting std for aspect ratio
+    std_y = std
+    std_x = std * (H / W)
+
+    # 2D Gaussian
+    gaus2d = np.exp(-1 * (grid_x**2 / (2 * std_x**2) + grid_y**2 / (2 * std_y**2)))
+
+    return scale * gaus2d + offset
+
 def depth_read(file_path):
-    return cv.imread(file_path, cv.IMREAD_UNCHANGED)
+    return cv.imread(file_path, cv.IMREAD_UNCHANGED) * gaus2d((512, 512), 1.3754354715e+00, 3.8593712449e-01, 6.1287075281e-01)
 
 
 def flow_read(filename):
