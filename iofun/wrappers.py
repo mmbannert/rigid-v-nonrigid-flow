@@ -3,6 +3,7 @@ import cv2 as cv
 import numpy as np
 import json
 from . import sintel, spring, kubric, monkaa
+from tools import utils
 
 ''' 
 Define functions to load ...
@@ -105,10 +106,42 @@ def get_depth(dataset: str, data_dir: str, mov_name: str, frame1_num: int):
         depth2 = intrinsics[frame1_num][0] * .065 / disp2
 
     elif dataset=='kubric':
-        depth1 = kubric.depth_read(op.join(
+        metadata_path = op.join(data_dir, mov_name, 'metadata.json')
+        with open(metadata_path, 'r') as f:
+            metadata = json.load(f)
+        
+        resolution = metadata['metadata']['resolution']
+        focal_length = metadata['camera']['focal_length']
+        sensor_width = metadata['camera']['sensor_width']
+
+        '''
+        The depths in Kubric are provided as distances from the center of the 
+        camera. We need them to be measured in distance to the camera plane.
+        '''
+
+        # convert focal length to pixels using sensor width and resolution
+        px_per_mm = resolution[0] / sensor_width
+        focal_length_px = focal_length * px_per_mm
+
+        # distance of each pixel from the image center in pixel units
+        ctr_dist = utils.distance_from_center(resolution[0], resolution[1])
+
+        # distance from the focal point to where the line connecting the focal
+        # and the location of that pixel in the camera coordinate system
+        # intersects with the screen plane
+        focal2screen_dist = np.sqrt(ctr_dist ** 2 + focal_length_px ** 2)
+
+        # load depths for the two frames -- they are expressed as distances 
+        # from the origin of the camera coordinate system
+        depth1_dfo = kubric.depth_read(op.join(
             data_dir, mov_name,'depth_%05.i.tiff' % frame1_num))
-        depth2 = kubric.depth_read(op.join(
+        depth2_dfo = kubric.depth_read(op.join(
             data_dir, mov_name,'depth_%05.i.tiff' % (frame1_num+1)))
+        
+        # use Thales theorem to convert depths to distance from camera plane
+        depth1 = depth1_dfo * focal_length_px / focal2screen_dist
+        depth2 = depth2_dfo * focal_length_px / focal2screen_dist
+        
         
     elif dataset=='monkaa':
         disp1_path = op.join(data_dir, mov_name,'depth',
