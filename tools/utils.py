@@ -12,6 +12,22 @@ def img2mat(img_in):
     return img_in.reshape((n_pixels, n_channels)).T
 
 
+def distance_from_center(img_height: float, img_width: float) -> np.ndarray:
+    img_height = np.float32(img_height)
+    img_width = np.float32(img_width)
+    
+    # label each pixel with a pair of x,y coordinates
+    xs, ys = np.meshgrid(np.arange(img_width), np.arange(img_height))
+
+    # move origin of the coordinate system to the image center
+    xs -= (img_width - 1) / 2.
+    ys -= (img_height - 1) / 2.
+
+    # compute Euclidean distance from image center
+    return np.sqrt(xs ** 2 + ys ** 2)
+
+
+
 def mat2img(pxlist_in, img_shape):
     return np.reshape(pxlist_in, img_shape)
 
