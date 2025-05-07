@@ -1,4 +1,4 @@
-name: rigid-flow
+name: rigid-v-nonrigid-flow
 channels:
   - conda-forge
 dependencies:
