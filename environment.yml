@@ -4,7 +4,6 @@ channels:
 dependencies:
   - python
   - scipy
-  - conda-repo-cli
   - nb_conda_kernels
   - jupyter
   - jupyterlab
