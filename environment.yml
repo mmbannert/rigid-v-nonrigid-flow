@@ -15,6 +15,7 @@ dependencies:
   - ipywidgets=7
   - ipympl
   - pyquaternion
+  - pandas
   - pip
   - pip:
     - flow-vis
