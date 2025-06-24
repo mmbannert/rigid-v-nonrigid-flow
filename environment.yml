@@ -1,10 +1,9 @@
-name: rigid-flow
+name: rigid-v-nonrigid-flow
 channels:
   - conda-forge
 dependencies:
   - python
   - scipy
-  - conda-repo-cli
   - nb_conda_kernels
   - jupyter
   - jupyterlab
@@ -16,6 +15,7 @@ dependencies:
   - ipywidgets=7
   - ipympl
   - pyquaternion
+  - pandas
   - pip
   - pip:
     - flow-vis
