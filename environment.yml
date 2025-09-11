@@ -15,6 +15,7 @@ dependencies:
   - ipywidgets=7
   - ipympl
   - pyquaternion
+  - nbstripout
   - pandas
   - pip
   - pip:
