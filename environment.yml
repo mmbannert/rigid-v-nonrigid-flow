@@ -17,6 +17,7 @@ dependencies:
   - pyquaternion
   - nbstripout
   - pandas
+  - tqdm
   - pip
   - pip:
     - flow-vis
